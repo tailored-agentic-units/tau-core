@@ -2,7 +2,9 @@
   "plansDirectory": "./.claude/plans",
   "permissions": {
     "allow": [
+      "Skill(github-cli)",
       "Skill(go-patterns)",
+      "Skill(skill-creator)",
       "Skill(tau-core-admin)",
       "Skill(tau-core-dev)"
     ]
