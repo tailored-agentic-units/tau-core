@@ -2,8 +2,16 @@
   "plansDirectory": "./.claude/plans",
   "permissions": {
     "allow": [
+      "Bash(gh auth status*)",
+      "Bash(gh issue list*)",
+      "Bash(gh issue view*)",
+      "Bash(gh project field-list*)",
+      "Bash(gh project item-list*)",
+      "Bash(gh project list*)",
+      "Bash(gh project view*)",
       "Skill(github-cli)",
       "Skill(go-patterns)",
+      "Skill(project-management)",
       "Skill(skill-creator)",
       "Skill(tau-core-admin)",
       "Skill(tau-core-dev)"

@@ -38,6 +38,7 @@ Skills load automatically based on context:
 | Skill | Use When |
 |-------|----------|
 | go-patterns | General Go design patterns, interfaces, error handling |
+| project-management | GitHub Projects v2, phases, cross-repo backlogs |
 | tau-core-admin | Contributing, extending providers/protocols, testing |
 | tau-core-dev | Building applications with tau-core, configuration |
 

@@ -186,7 +186,12 @@ Skills support dynamic values:
 | `$ARGUMENTS` | All arguments passed with `/skill-name args` |
 | `$ARGUMENTS[N]` or `$N` | Specific argument by index (0-based) |
 | `${CLAUDE_SESSION_ID}` | Current session ID |
-| `` !`command` `` | Shell command output injected before skill runs |
+| Shell substitution (note below) | Shell command output injected before skill runs |
+
+**Shell substitution syntax:** An exclamation mark immediately followed by a
+command wrapped in backticks. Example: to inject the current git branch, write
+exclamation mark then `git branch --show-current` in backticks (no space between
+the exclamation mark and the opening backtick).
 
 ## Invocation Control
 
