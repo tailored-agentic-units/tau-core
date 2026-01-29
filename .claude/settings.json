@@ -1,0 +1,10 @@
+{
+  "plansDirectory": "./.claude/plans",
+  "permissions": {
+    "allow": [
+      "Skill(go-patterns)",
+      "Skill(tau-core-admin)",
+      "Skill(tau-core-dev)"
+    ]
+  }
+}
