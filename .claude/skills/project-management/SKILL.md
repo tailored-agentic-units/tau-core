@@ -54,9 +54,39 @@ Manage GitHub Projects v2, phases, and cross-repo backlogs using the `gh project
 
 ### Phase as Cross-Repo Milestone
 
-GitHub milestones are repo-scoped and cannot coordinate across repositories.
 Phases use a SINGLE_SELECT field on the project to group items from any linked repo.
-Example phases: "Backlog", "MVP Phase 1", "v0.0.2", "Done".
+Example phases: "Backlog", "Phase 1 - Foundation", "v0.0.2", "Done".
+
+### Milestone Convention
+
+Each non-meta phase (i.e., not "Backlog" or "Done") gets a **corresponding milestone**
+on every linked repository. This provides repo-level progress metrics (X of Y closed)
+that align with the project phase.
+
+| Construct | Scope | Purpose |
+|-----------|-------|---------|
+| **Phase** | Cross-repo (project) | Organize items across all repos |
+| **Milestone** | Per-repo | Progress tracking within a single repo |
+
+**Rules:**
+- Milestone names match phase names exactly (e.g., "Phase 1 - Foundation")
+- When assigning a phase to an issue, also assign the corresponding milestone
+- "Backlog" phase does not get a milestone (unscheduled work)
+
+**Create milestones when adding a phase:**
+
+```bash
+# Create milestone on each linked repo
+gh api --method POST /repos/<owner>/<repo>/milestones \
+  -f title="Phase 1 - Foundation" \
+  -f description="Foundation phase — see TAU Platform project board"
+```
+
+**Assign milestone when assigning phase:**
+
+```bash
+gh issue edit <number> --repo <owner>/<repo> --milestone "Phase 1 - Foundation"
+```
 
 ### ID Chain
 
@@ -70,6 +100,53 @@ item URL -------> item ID           (gh project item-add --format json)
 ```
 
 All IDs are opaque strings (e.g., `PVT_...`, `PVTSSF_...`, `PVTSO_...`, `PVTI_...`).
+
+## Label Convention
+
+All TAU Platform repositories use a shared label taxonomy focused on work type
+categorization. Labels are general-purpose — no domain-specific ontology.
+
+### Standard Labels
+
+| Label | Description | Color |
+|-------|-------------|-------|
+| `bug` | Something isn't working correctly | `d73a4a` |
+| `feature` | New capability or functionality | `0075ca` |
+| `improvement` | Enhancement to existing functionality | `a2eeef` |
+| `refactor` | Code restructuring without behavior change | `d4c5f9` |
+| `documentation` | Documentation additions or updates | `0e8a16` |
+| `testing` | Test additions or improvements | `fbca04` |
+| `infrastructure` | CI/CD, build, tooling, project setup | `e4e669` |
+
+### Bootstrap Labels on a New Repo
+
+Replace the default GitHub labels with the standard set:
+
+```bash
+# Remove default labels
+for label in "bug" "documentation" "duplicate" "enhancement" "good first issue" \
+  "help wanted" "invalid" "question" "wontfix"; do
+  gh label delete "$label" --repo <owner>/<repo> --yes 2>/dev/null
+done
+
+# Create standard labels
+gh label create "bug"             --repo <owner>/<repo> --color d73a4a --description "Something isn't working correctly"
+gh label create "feature"         --repo <owner>/<repo> --color 0075ca --description "New capability or functionality"
+gh label create "improvement"     --repo <owner>/<repo> --color a2eeef --description "Enhancement to existing functionality"
+gh label create "refactor"        --repo <owner>/<repo> --color d4c5f9 --description "Code restructuring without behavior change"
+gh label create "documentation"   --repo <owner>/<repo> --color 0e8a16 --description "Documentation additions or updates"
+gh label create "testing"         --repo <owner>/<repo> --color fbca04 --description "Test additions or improvements"
+gh label create "infrastructure"  --repo <owner>/<repo> --color e4e669 --description "CI/CD, build, tooling, project setup"
+```
+
+### Clone Labels Across Repos
+
+Once a source repo has the standard labels, clone them to new repos:
+
+```bash
+# Clone labels from source repo (overwrites existing)
+gh label clone <owner>/tau-platform --repo <owner>/<new-repo> --force
+```
 
 ## Project Lifecycle
 
@@ -321,7 +398,7 @@ gh project item-delete <number> --owner <owner> --id <item-id>
 
 ### Bootstrap a New Project
 
-Create a project, link repos, and set up the Phase field in one sequence.
+Create a project, link repos, set up the Phase field, and bootstrap labels.
 
 ```bash
 # 1. Create the project
@@ -340,6 +417,17 @@ gh project field-create "$PROJECT_NUM" --owner <owner> \
 
 # 4. Set visibility
 gh project edit "$PROJECT_NUM" --owner <owner> --visibility PRIVATE
+
+# 5. Bootstrap standard labels on linked repos (see Label Convention)
+gh label clone <owner>/tau-platform --repo <owner>/tau-core --force
+gh label clone <owner>/tau-platform --repo <owner>/tau-skills --force
+
+# 6. Create milestones for non-meta phases on each linked repo (see Milestone Convention)
+for repo in <owner>/tau-core <owner>/tau-skills; do
+  gh api --method POST "/repos/$repo/milestones" \
+    -f title="MVP Phase 1" \
+    -f description="Phase 1 — see TAU Platform project board"
+done
 ```
 
 ### Bulk Add Issues to Project

@@ -4,9 +4,11 @@ description: >
   REQUIRED for ANY GitHub repository operations via the gh CLI.
   Use when the user asks to "create an issue", "list issues", "create PR",
   "search issues", "create release", "view PR comments", "check CI status",
-  "manage labels", "set secret", "set variable", or any gh CLI operation.
+  "manage labels", "set secret", "set variable", "create discussion", or any
+  gh CLI operation.
   Triggers: issue, PR, pull request, release, GitHub, gh command, repository,
-  milestone, label, assignee, workflow, actions, gist, secret, variable.
+  milestone, label, assignee, workflow, actions, gist, secret, variable,
+  discussion.
 
   When this skill is invoked, use the gh CLI to execute the requested operation.
   Always use --json flag for structured output when parsing is needed.
@@ -21,6 +23,7 @@ Perform GitHub repository operations using the `gh` CLI.
 
 **ALWAYS invoke this skill when the user's request involves ANY of these:**
 
+- Creating, listing, viewing, updating, or closing **discussions** (via GraphQL)
 - Creating, listing, searching, viewing, editing, or closing **issues**
 - Creating, listing, viewing, reviewing, or merging **pull requests**
 - Creating, listing, or deleting **releases**
@@ -49,6 +52,7 @@ Each `gh` subcommand has detailed documentation in its reference file:
 | `gh api` | REST and GraphQL API calls | [api.md](references/api.md) |
 | `gh gist` | Create, list, view gists | [gist.md](references/gist.md) |
 | `gh label` | Create, list, edit, delete, clone labels | [label.md](references/label.md) |
+| Discussions | Create, list, view, update, close, comment (via GraphQL) | [discussion.md](references/discussion.md) |
 | `gh secret` | Set, list, delete secrets (repo, env, org) | [secret.md](references/secret.md) |
 | `gh variable` | Set, get, list, delete variables (repo, env, org) | [variable.md](references/variable.md) |
 
